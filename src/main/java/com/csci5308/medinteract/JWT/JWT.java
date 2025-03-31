@@ -42,9 +42,13 @@ public class JWT {
 //        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
 //    }
 
-    public Claims extractClaims(String token) {
+public Claims extractClaims(String token) {
+    try {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+    } catch (JwtException e) {
+        throw new MalformedJwtException("Invalid token format", e);
     }
+}
 
 
     public boolean validateToken(String token) {

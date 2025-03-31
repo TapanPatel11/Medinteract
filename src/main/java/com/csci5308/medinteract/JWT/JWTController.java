@@ -19,6 +19,7 @@ public class JWTController {
     @PostMapping("/validateJWTToken")
     public ResponseEntity validateJWTToken(@RequestBody String token)
     {
+        System.out.println("Received Token = "+ token);
         if(!token.isEmpty() && jwtTokenUtil.validateToken(token))
         {
             Response res = new Response(jwtTokenUtil.extractClaims(token), false, "Token is Valid");

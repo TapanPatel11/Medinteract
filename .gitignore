@@ -1,0 +1,41 @@
+# Ignore Maven target directory
+target/
+
+# Ignore IntelliJ IDEA project files
+.idea/
+
+# Ignore Eclipse project files
+.project
+.classpath
+.settings/
+
+# Ignore Spring Boot dev tools
+spring-boot-devtools/
+
+# Ignore local environment-specific files
+.env
+
+# Ignore log files
+*.log
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore .mvn directory (Maven wrapper)
+.mvn/
+
+# Ignore Maven wrapper files
+mvnw
+mvnw.cmd
+
+# Ignore temporary files created by editors
+*.swp
+*.swo
+
+# Ignore build directories
+build/
+
+# Ignore JARs or WARs generated in the target directory
+*.jar
+*.war

@@ -77,7 +77,7 @@ public class ArticleModel {
     @NotBlank
     @NotNull
     @Lob
-    @Column(columnDefinition="LONGBLOB")
+    @Column(name = "content", columnDefinition = "VARBINARY(MAX)")
     private byte[] content;
 
     public LocalDateTime getCreatedDate() {

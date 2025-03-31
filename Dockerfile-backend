@@ -1,0 +1,13 @@
+# Stage 1: Build
+FROM maven:3.8.4-openjdk-17-slim AS build
+WORKDIR /usr/src/app/backend
+COPY pom.xml .  
+COPY src src  
+RUN mvn clean package -DskipTests  
+
+# Stage 2: Run
+FROM gcr.io/distroless/java17-debian12
+WORKDIR /usr/src/app/backend
+COPY --from=build /usr/src/app/backend/target/medinteract-0.0.1-SNAPSHOT.jar app.jar  
+EXPOSE 6969
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,0 +1,24 @@
+# Ignore Maven target directory
+target/
+
+# Ignore IDE directories
+.idea/
+.vscode/
+
+# Ignore local environment-specific files
+.env
+
+# Ignore log files
+*.log
+
+# Ignore Docker-related files
+.dockerignore
+Dockerfile
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore temporary files created by editors
+*.swp
+*.swo
