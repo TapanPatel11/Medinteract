@@ -39,3 +39,5 @@ build/
 # Ignore JARs or WARs generated in the target directory
 *.jar
 *.war
+
+.DS_Store
