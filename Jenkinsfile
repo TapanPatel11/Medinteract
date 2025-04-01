@@ -45,11 +45,10 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([string(credentialsId: '57879b0a-5739-40b0-9598-a9fe0300d795', variable: 'DOCKER_PWD')]) {
+        withCredentials([usernamePassword(credentialsId: 'ba185353-bbf6-4676-a6fb-f9c41d83d124', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
                         // Login to Docker Registry using safer method
-                        sh """
-                        echo "$DOCKER_PWD" | docker login $DOCKER_REGISTRY -u $DOCKER_USER --password-stdin
-                        """
+          sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+
 
                         // Build and Push Frontend Docker Image
                         sh """
