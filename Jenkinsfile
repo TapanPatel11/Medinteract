@@ -1,5 +1,5 @@
 pipeline {
-    agent none  // No default agent, use specific agents for each stage
+    agent any  // No default agent, use specific agents for each stage
 
     environment {
         DOCKER_REGISTRY = "swapsphere.azurecr.io"
@@ -37,33 +37,28 @@ pipeline {
         }
 
         stage('Build and Push Docker Images') {
-            agent {
-                docker {
-                    image 'docker:20.10.7'  // Use Docker image for Docker build steps
-                    args '--privileged'
-                }
-            }
-            steps {
-                script {
-        withCredentials([usernamePassword(credentialsId: 'ba185353-bbf6-4676-a6fb-f9c41d83d124', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-                        // Login to Docker Registry using safer method
-          sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+
+        //     steps {
+        //         script {
+        // withCredentials([usernamePassword(credentialsId: 'ba185353-bbf6-4676-a6fb-f9c41d83d124', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+        //                 // Login to Docker Registry using safer method
+        //   sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
 
 
-                        // Build and Push Frontend Docker Image
-                        sh """
-                        docker build -t $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG -f Dockerfile-frontend .
-                        docker push $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG
-                        """
+        //                 // Build and Push Frontend Docker Image
+        //                 sh """
+        //                 docker build -t $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG -f Dockerfile-frontend .
+        //                 docker push $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG
+        //                 """
 
-                        // Build and Push Backend Docker Image
-                        sh """
-                        docker build -t $DOCKER_REGISTRY/$BACKEND_IMAGE:$IMAGE_TAG -f Dockerfile-backend .
-                        docker push $DOCKER_REGISTRY/$BACKEND_IMAGE:$IMAGE_TAG
-                        """
-                    }
-                }
-            }
+        //                 // Build and Push Backend Docker Image
+        //                 sh """
+        //                 docker build -t $DOCKER_REGISTRY/$BACKEND_IMAGE:$IMAGE_TAG -f Dockerfile-backend .
+        //                 docker push $DOCKER_REGISTRY/$BACKEND_IMAGE:$IMAGE_TAG
+        //                 """
+        //             }
+        //         }
+        //     }
         }
     }
 
