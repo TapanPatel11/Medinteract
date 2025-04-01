@@ -13,8 +13,8 @@ pipeline {
         stage('Checkout Code') {
             agent {
                 docker {
-                    image 'maven:3.8.4-openjdk-17-slim'  // Use Maven image for this stage
-                    args '-v /root/.m2'  // Persist maven cache to avoid re-downloading dependencies
+                    image 'maven:3.8.4-openjdk-17-slim'
+                    args '-v /root/.m2'
                 }
             }
             steps {
@@ -40,30 +40,29 @@ pipeline {
             agent {
                 docker {
                     image 'docker:20.10.7'  // Use Docker image for Docker build steps
-                    args '--privileged'  // Allow Docker to build Docker images in the container
+                    args '--privileged'
                 }
             }
             steps {
                 script {
+                    withCredentials([string(credentialsId: '57879b0a-5739-40b0-9598-a9fe0300d795', variable: 'DOCKER_PWD')]) {
+                        // Login to Docker Registry using safer method
+                        sh """
+                        echo "$DOCKER_PWD" | docker login $DOCKER_REGISTRY -u $DOCKER_USER --password-stdin
+                        """
 
-                    withCredentials([string(credentialsId: '57879b0a-5739-40b0-9598-a9fe0300d795', variable: 'docker-pwd')]) {
-                    // Build and Push Frontend Docker Image
-                    sh """
-                    docker login -u $DOCKER_USER -p ${docker-pwd}
-                    """
-                    
-                    sh """
-                    docker build -t $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG -f Dockerfile-frontend .
-                    docker push $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG
-                    """
+                        // Build and Push Frontend Docker Image
+                        sh """
+                        docker build -t $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG -f Dockerfile-frontend .
+                        docker push $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG
+                        """
 
-                    // Build and Push Backend Docker Image
-                    sh """
-                    docker build -t $DOCKER_REGISTRY/$BACKEND_IMAGE:$IMAGE_TAG -f Dockerfile-backend .
-                    docker push $DOCKER_REGISTRY/$BACKEND_IMAGE:$IMAGE_TAG
-                    """
+                        // Build and Push Backend Docker Image
+                        sh """
+                        docker build -t $DOCKER_REGISTRY/$BACKEND_IMAGE:$IMAGE_TAG -f Dockerfile-backend .
+                        docker push $DOCKER_REGISTRY/$BACKEND_IMAGE:$IMAGE_TAG
+                        """
                     }
-
                 }
             }
         }
