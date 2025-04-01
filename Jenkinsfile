@@ -36,7 +36,15 @@ pipeline {
             }
         }
 
-        // stage('Build and Push Docker Images') {
+        stage('Build and Push Docker Images') {
+            withDockerRegistry(credentialsId: 'ba185353-bbf6-4676-a6fb-f9c41d83d124', url: 'swapsphere.azurecr.io') {
+                        // Build and Push Frontend Docker Image
+                        sh """
+                        docker build -t $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG -f Dockerfile-frontend .
+                        docker push $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG
+                        """
+
+            }
 
         //     steps {
         //         script {
@@ -59,7 +67,7 @@ pipeline {
         //             }
         //         }
         //     }
-        // }
+        }
     }
 
     post {
