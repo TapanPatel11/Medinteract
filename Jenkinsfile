@@ -1,5 +1,5 @@
 pipeline {
-    agent any  // No default agent, use specific agents for each stage
+    agent any  
 
     environment {
         DOCKER_REGISTRY = "swapsphere.azurecr.io"
@@ -37,39 +37,21 @@ pipeline {
         }
 
         stage('Build and Push Docker Images') {
-                        steps {
+            steps {
+                withDockerRegistry(credentialsId: 'ba185353-bbf6-4676-a6fb-f9c41d83d124', url: 'https://swapsphere.azurecr.io') {
+                    // Build and Push Frontend Docker Image
+                    sh """
+                    docker build -t $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG -f Dockerfile-frontend .
+                    docker push $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG
+                    """
 
-            withDockerRegistry(credentialsId: 'ba185353-bbf6-4676-a6fb-f9c41d83d124', url: 'swapsphere.azurecr.io') {
-                        // Build and Push Frontend Docker Image
-                        sh """
-                        docker build -t $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG -f Dockerfile-frontend .
-                        docker push $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG
-                        """
-
+                    // Build and Push Backend Docker Image
+                    sh """
+                    docker build -t $DOCKER_REGISTRY/$BACKEND_IMAGE:$IMAGE_TAG -f Dockerfile-backend .
+                    docker push $DOCKER_REGISTRY/$BACKEND_IMAGE:$IMAGE_TAG
+                    """
+                }
             }
-                        }
-
-        //     steps {
-        //         script {
-        // withCredentials([usernamePassword(credentialsId: 'ba185353-bbf6-4676-a6fb-f9c41d83d124', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-        //                 // Login to Docker Registry using safer method
-        //   sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-
-
-        //                 // Build and Push Frontend Docker Image
-        //                 sh """
-        //                 docker build -t $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG -f Dockerfile-frontend .
-        //                 docker push $DOCKER_REGISTRY/$FRONTEND_IMAGE:$IMAGE_TAG
-        //                 """
-
-        //                 // Build and Push Backend Docker Image
-        //                 sh """
-        //                 docker build -t $DOCKER_REGISTRY/$BACKEND_IMAGE:$IMAGE_TAG -f Dockerfile-backend .
-        //                 docker push $DOCKER_REGISTRY/$BACKEND_IMAGE:$IMAGE_TAG
-        //                 """
-        //             }
-        //         }
-        //     }
         }
     }
 
